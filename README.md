@@ -55,7 +55,7 @@ Unity客户端代码: https://github.com/wyx-0203/sgs-unity
 
 本应用将在3个Docker容器下运行:
 
-* `web-api`容器: 运行后端服务(本机编译Go项目，得到可执行文件并传入容器)
+* `web-api`容器: 运行后端服务(本机编译Go项目，得到可执行文件，并传入容器)
 
 * `nginx`容器: 反向代理所有web请求，并配置静态文件(WebGL)
 
@@ -97,39 +97,39 @@ git clone https://github.com/wyx-0203/sgs-server.git
 
    ```nginx
    server {
-       listen 443 ssl;
+   	listen 443 ssl;
    
-       # 改为自己的域名	
-       server_name xxx.com;
-       
-       # 修改证书及密钥
-       ssl_certificate     cert/ssl.crt;
-       ssl_certificate_key cert/ssl.key;
-       ...
+   	# 改为自己的域名	
+   	server_name xxx.com;
+   	
+   	# 修改证书及密钥
+   	ssl_certificate     cert/ssl.crt;
+   	ssl_certificate_key cert/ssl.key;
+   	...
    
-       # web-api
-       location / {
-           # 改为自己的ip
-           proxy_pass https://xxx.xxx.xxx.xxx:8080/;
-         ...
-       }
+   	# web-api
+   	location / {
+   		# 改为自己的ip
+   		proxy_pass https://xxx.xxx.xxx.xxx:8080/;
+   		...
+   	}
    
-       # websocket
-       location = /websocket {
-           # 改为自己的ip
-           proxy_pass https://xxx.xxx.xxx.xxx:8080/websocket;
-           ...
-       }
+   	# websocket
+   	location = /websocket {
+   		# 改为自己的ip
+   		proxy_pass https://xxx.xxx.xxx.xxx:8080/websocket;
+   		...
+   	}
    
-       ...
+   	...
    }
    
    server {
-       listen 80;
-     
-     	# 改为自己的域名
-       server_name xxx.com;
-       ...
+   	listen 80;
+   	
+   	# 改为自己的域名
+   	server_name xxx.com;
+   	...
    }
    ```
 
@@ -137,7 +137,27 @@ git clone https://github.com/wyx-0203/sgs-server.git
 
 > 若不需要发布到Web平台(例如改为安卓)，则跳过这一步，并自行修改`nginx/default.conf`和`nginx/Dockerfile`文件。
 
-1. 在Unity中构建WebGL应用:
+1. 修改Unity项目中的`Assets/Scripts/Utils/Url.cs`:
+
+   ```c#
+   public static class Url
+   {
+   	// 本地运行
+   	// public const string DOMAIN_NAME = "http://localhost:80/";
+   	// public const string WS_URL = "ws://localhost:80/websocket";
+   
+   	// 服务器运行
+   	// public const string DOMAIN_NAME = "https://app931.acapp.acwing.com.cn/";
+   	// public const string WEB_SOCKET = "wss://app931.acapp.acwing.com.cn/websocket";
+   
+   	...
+   }
+   
+   ```
+
+   
+
+2. 在Unity中构建WebGL应用:
 
    ![](images/build.png)
 
@@ -155,7 +175,7 @@ git clone https://github.com/wyx-0203/sgs-server.git
    ├── ...
    ```
 
-2. 将生成的文件复制到`sgs-server/nginx/webgl`目录下，若需要上传到服务器，可使用`scp`命令，例如:
+3. 将生成的文件复制到`sgs-server/nginx/webgl`目录下，若需要上传到服务器，可使用`scp`命令，例如:
 
    ```sh
    scp -r Build/WebGL/* aliyun:~/sgs-server/nginx/webgl
@@ -256,7 +276,7 @@ sgs-server
 ├── match 游戏服务
 │   ├── hub.go 管理所有房间和在线玩家
 │   ├── message.go 定义所有WebSocket消息结构体
-│   ├── player.go 玩家结构体，保存信息和WebSocket连接
+│   ├── player.go 玩家结构体，用于保存信息和WebSocket连接
 │   └── room.go 房间结构体
 ├── models 模型层，与数据库交互
 │   ├── init.go
