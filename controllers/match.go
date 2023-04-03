@@ -125,20 +125,6 @@ func getRoomInfo(c *gin.Context, r *match.Room) {
 	})
 }
 
-// func GetRoomInfo(c *gin.Context) {
-// 	// 查找房间
-// 	id, _ := strconv.Atoi(c.Query("room_id"))
-// 	r, ok := match.Rooms[id]
-// 	if !ok {
-// 		c.JSON(http.StatusOK, gin.H{
-// 			"code":    1,
-// 			"message": "房间不存在",
-// 		})
-// 		return
-// 	}
-// 	getRoomInfo(c, r)
-// }
-
 func SetAlready(c *gin.Context) {
 	p, ok := getPlayer(c)
 	if !ok {

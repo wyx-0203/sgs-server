@@ -8,15 +8,18 @@ services:
       - MYSQL_USER=sgs
       - MYSQL_PASSWORD=123456
       - MYSQL_RANDOM_ROOT_PASSWORD="yes"
+    
+    # 数据库映射到本地，注意不能存放在项目文件夹内，否则go.mod会因权限问题报错
     volumes:
-      - ./data/mysql:/var/lib/mysql
+      - ~/sgs-data/mysql:/var/lib/mysql
 
   nginx:
     build: nginx/
     ports:
       - 80:80
+      - 443:443
 
-  web:
+  web-api:
     build: .
     restart: "always"
     ports:

@@ -1,20 +1,11 @@
 FROM alpine:latest
 
-RUN mkdir /app
-COPY bin/sgs-server /app
+# 复制在本地编译生成的二进制文件
+WORKDIR /app
+COPY bin/sgs-server .
 
-CMD ["/app/sgs-server"]
+# 将ssl证书复制到/app目录下
+COPY nginx/cert .
 
-# FROM golang:alpine
-
-# WORKDIR /app
-
-# COPY go.mod ./
-# COPY go.sum ./
-# RUN go mod download
-
-# COPY * ./
-
-# RUN go build -o /sgs-server
-
-# CMD [ "/sgs-server" ]
+# 运行
+CMD ["./sgs-server"]

@@ -23,10 +23,5 @@ type setAlreadyMsg struct {
 
 type startGameMsg struct {
 	message
-	// 选边
-	// Red       []int  `json:"red"`
-	// Blue      []int  `json:"blue"`
 	Players []uint `json:"players"`
-	// 将池
-	// Generals []int `json:"generals"`
 }
