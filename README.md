@@ -10,9 +10,9 @@ Unity客户端代码: https://github.com/wyx-0203/sgs-unity
 
 ## 预览
 
-![](images/preview1.png)
+<img src="images/preview1.png" style="zoom: 50%;" />
 
-![](images/preview2.png)
+<img src="images/preview2.png" style="zoom:50%;" />
 
 ## 技术栈
 
@@ -97,31 +97,31 @@ git clone https://github.com/wyx-0203/sgs-server.git
 
    ```nginx
    server {
-     	listen 443 ssl;
+       listen 443 ssl;
    
-   		# 改为自己的域名	
+       # 改为自己的域名	
        server_name xxx.com;
-     	
-     	# 修改证书及密钥
+       
+       # 修改证书及密钥
        ssl_certificate     cert/ssl.crt;
        ssl_certificate_key cert/ssl.key;
        ...
    
        # web-api
        location / {
-       		# 改为自己的ip
+           # 改为自己的ip
            proxy_pass https://xxx.xxx.xxx.xxx:8080/;
-   				...
+         ...
        }
    
        # websocket
        location = /websocket {
-       		# 改为自己的ip
+           # 改为自己的ip
            proxy_pass https://xxx.xxx.xxx.xxx:8080/websocket;
-   				...
+           ...
        }
    
-   		...
+       ...
    }
    
    server {
@@ -190,13 +190,13 @@ git clone https://github.com/wyx-0203/sgs-server.git
    const (
    	PORT = "8080"
      
-     // 若为本地运行，将ip设为host.docker.internal，而不是localhost
+   	// 若为本地运行，将ip设为host.docker.internal，而不是localhost
    	// MYSQL_DSN = "sgs:123456@tcp(host.docker.internal:3306)/sgs?charset=utf8&parseTime=True&loc=Local"
      
-     // 服务器
+   	// 服务器
    	// MYSQL_DSN = "sgs:123456@tcp(123.56.19.80:3306)/sgs?charset=utf8&parseTime=True&loc=Local"
    
-     // 设置是否开启SSL，若开启，需配置证书/密钥
+   	// 设置是否开启SSL，若开启，需配置证书/密钥
    	SSL_IS_ON   = true
    	SSL_CRT     = "/app/xxx.crt"
    	SSL_CRT_KEY = "/app/xxx.key"
