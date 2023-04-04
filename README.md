@@ -1,12 +1,6 @@
 ## 简介
 
-本项目为[Unity复刻《三国杀》](https://github.com/wyx-0203/sgs-unity)项目的服务端代码，使用Go语言开发，主要包括用户系统、联机对战等功能。并使用Nginx部署Go和Unity WebGL应用。
-
-游戏链接: https://app931.acapp.acwing.com.cn
-
-演示视频(旧版): https://www.bilibili.com/video/BV1QN4y1F791/
-
-Unity客户端代码: https://github.com/wyx-0203/sgs-unity
+本项目为[Unity复刻《三国杀》](https://github.com/wyx-0203/sgs-unity)的服务端代码，使用Go语言开发，实现了用户系统、联机对战等功能。并使用Nginx部署Go和Unity WebGL应用。
 
 ## 预览
 
@@ -53,11 +47,11 @@ Unity客户端代码: https://github.com/wyx-0203/sgs-unity
 
 ### 安装说明
 
-本应用将在3个Docker容器下运行:
+运行本应用将会启动3个Docker容器，分别是:
 
 * `web-api`容器: 运行后端服务(本机编译Go项目，得到可执行文件，并传入容器)
 
-* `nginx`容器: 反向代理所有web请求，并配置静态文件(WebGL)
+* `nginx`容器: 反向代理所有web请求，并部署静态文件(WebGL)
 
 * `mysql`容器: 数据库
 
