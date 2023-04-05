@@ -55,9 +55,9 @@
 
 * `mysql`容器: 数据库
 
-> 本文档会演示两种运行方式，即本地调试和部署到服务器(包括使用SSL，需准备域名和证书)。由于使用Docker Compose构建，本机不需要安装nginx和mysql，也不用手动下载Docker镜像。
+接下来会演示两种运行方式，即本地调试和部署到服务器(包括配置SSL，需准备域名和证书)。由于使用Docker Compose构建，本机不需要安装nginx和mysql，也不用手动下载Docker镜像。
 
-克隆代码库:
+克隆代码库到本地或服务器:
 
 ```sh
 git clone https://github.com/wyx-0203/sgs-server.git
@@ -127,9 +127,9 @@ git clone https://github.com/wyx-0203/sgs-server.git
    }
    ```
 
-### 整合Unity_WebGL应用
+### 部署Unity_WebGL应用
 
-> 若不需要发布到Web平台(例如改为安卓)，则跳过这一步，并自行修改`nginx/default.conf`和`nginx/Dockerfile`文件。
+> 若不需要发布到Web平台(例如改为安卓)，则跳过这一步，并自行修改`nginx/default.conf`和`nginx/Dockerfile`文件，删除WebGL相关的配置。
 
 1. 修改Unity项目中的`Assets/Scripts/Utils/Url.cs`:
 
@@ -287,3 +287,9 @@ sgs-server
 └── utils
     └── jwt.go JWT认证
 ```
+
+## 一些踩坑记录
+
+1. 使用Nginx代理WebSocket连接后，如果一段时间内没有消息传输，连接会自动断开。为解决此问题，需要加入WebSocket协议自带的Ping Pong机制。
+2. 本地(Mac系统)运行Docker容器时，若需要访问宿主机的其他端口，应该使用`host.docker.internal`，而不是`localhost`，否则指向的是容器内部的端口。例如`web-api`容器连接MySQL时，应使用`host.docker.internal:3306`。
+3. Nginx使用`rewrite`语句设置主页，必须把`html`文件放在放在`/etc/nginx/html`目录下。(没怎么接触过Nginx，现学现用，如果有更好的写法欢迎指正~)
