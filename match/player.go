@@ -2,20 +2,33 @@ package match
 
 import (
 	"log"
+	"time"
 
 	"github.com/gorilla/websocket"
 	"github.com/wyx-0203/sgs-server/models"
 )
 
+const (
+	// Max wait time when writing message to peer
+	writeWait = 5 * time.Second
+
+	// Max time till next pong from peer
+	pongWait = 10 * time.Second
+
+	// Send ping interval, must be less then pong wait time
+	pingPeriod = (pongWait * 9) / 10
+)
+
 type Player struct {
-	UserID    uint            `json:"id"`
-	Position  uint            `json:"position"`
-	Already   bool            `json:"already"`
-	Name      string          `json:"nickname"`
-	Character string          `json:"character"`
-	conn      *websocket.Conn `json:"-"`
-	Room      *Room           `json:"-"`
-	send      chan []byte     `json:"-"`
+	UserID    uint   `json:"id"`
+	Position  uint   `json:"position"`
+	Already   bool   `json:"already"`
+	Name      string `json:"nickname"`
+	Character string `json:"character"`
+	Room      *Room  `json:"-"`
+
+	conn *websocket.Conn `json:"-"`
+	send chan []byte     `json:"-"`
 }
 
 func NewPlayer(personal *models.Personal, conn *websocket.Conn) *Player {
@@ -23,13 +36,15 @@ func NewPlayer(personal *models.Personal, conn *websocket.Conn) *Player {
 		UserID:    personal.UserID,
 		Name:      personal.Name,
 		Character: personal.Character,
-		conn:      conn,
-		send:      make(chan []byte),
+
+		conn: conn,
+		send: make(chan []byte),
 	}
 
 	AddPlayer <- p
 	go p.read()
 	go p.write()
+	go p.ping()
 	return p
 }
 
@@ -42,7 +57,9 @@ func (p *Player) disconnect() {
 }
 
 func (p *Player) read() {
-	defer p.disconnect()
+	p.conn.SetReadDeadline(time.Now().Add(pongWait))
+	p.conn.SetPongHandler(func(string) error { p.conn.SetReadDeadline(time.Now().Add(pongWait)); return nil })
+
 	for {
 		// 读取消息
 		_, message, err := p.conn.ReadMessage()
@@ -59,10 +76,23 @@ func (p *Player) read() {
 }
 
 func (p *Player) write() {
-	defer p.disconnect()
 	for message := range p.send {
 		if err := p.conn.WriteMessage(websocket.TextMessage, message); err != nil {
 			log.Println(err)
+			return
+		}
+	}
+}
+
+func (p *Player) ping() {
+	defer p.disconnect()
+
+	ticker := time.NewTicker(pingPeriod)
+	defer ticker.Stop()
+
+	for range ticker.C {
+		p.conn.SetWriteDeadline(time.Now().Add(writeWait))
+		if err := p.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
 			return
 		}
 	}
