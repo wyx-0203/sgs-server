@@ -1,23 +1,22 @@
 package match
 
 import (
-	"log"
-	"time"
+	"fmt"
 
 	"github.com/gorilla/websocket"
 	"github.com/wyx-0203/sgs-server/models"
 )
 
-const (
-	// Max wait time when writing message to peer
-	writeWait = 5 * time.Second
+// const (
+// 	// Max wait time when writing message to peer
+// 	writeWait = 5 * time.Second
 
-	// Max time till next pong from peer
-	pongWait = 10 * time.Second
+// 	// Max time till next pong from peer
+// 	pongWait = 20 * time.Second
 
-	// Send ping interval, must be less then pong wait time
-	pingPeriod = (pongWait * 9) / 10
-)
+// 	// Send ping interval, must be less then pong wait time
+// 	pingPeriod = (pongWait * 9) / 10
+// )
 
 type Player struct {
 	UserID    uint   `json:"id"`
@@ -44,7 +43,7 @@ func NewPlayer(personal *models.Personal, conn *websocket.Conn) *Player {
 	AddPlayer <- p
 	go p.read()
 	go p.write()
-	go p.ping()
+	// go p.ping()
 	return p
 }
 
@@ -57,15 +56,16 @@ func (p *Player) disconnect() {
 }
 
 func (p *Player) read() {
-	p.conn.SetReadDeadline(time.Now().Add(pongWait))
-	p.conn.SetPongHandler(func(string) error { p.conn.SetReadDeadline(time.Now().Add(pongWait)); return nil })
+	defer p.disconnect()
+	// p.conn.SetReadDeadline(time.Now().Add(pongWait))
+	// p.conn.SetPongHandler(func(string) error { p.conn.SetReadDeadline(time.Now().Add(pongWait)); return nil })
 
 	for {
 		// 读取消息
 		_, message, err := p.conn.ReadMessage()
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
-				log.Printf("unexpected close error: %v", err)
+				fmt.Printf("unexpected close error: %v", err)
 			}
 			break
 		}
@@ -78,22 +78,23 @@ func (p *Player) read() {
 func (p *Player) write() {
 	for message := range p.send {
 		if err := p.conn.WriteMessage(websocket.TextMessage, message); err != nil {
-			log.Println(err)
+			fmt.Println(err)
 			return
 		}
 	}
 }
 
-func (p *Player) ping() {
-	defer p.disconnect()
+// func (p *Player) ping() {
+// 	defer p.disconnect()
 
-	ticker := time.NewTicker(pingPeriod)
-	defer ticker.Stop()
+// 	ticker := time.NewTicker(pingPeriod)
+// 	defer ticker.Stop()
 
-	for range ticker.C {
-		p.conn.SetWriteDeadline(time.Now().Add(writeWait))
-		if err := p.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
-			return
-		}
-	}
-}
+// 	for range ticker.C {
+// 		p.conn.SetWriteDeadline(time.Now().Add(writeWait))
+// 		if err := p.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
+// 			fmt.Println("player " + p.Name + ": ping pong error")
+// 			return
+// 		}
+// 	}
+// }

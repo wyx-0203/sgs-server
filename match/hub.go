@@ -30,6 +30,7 @@ func handleRoom() {
 		for i := range Rooms {
 			fmt.Printf("%d ", i)
 		}
+		fmt.Printf("\n")
 	}
 }
 
@@ -46,25 +47,22 @@ func handlePlayer() {
 		for i := range Players {
 			fmt.Printf("%d ", i)
 		}
+		fmt.Printf("\n")
 	}
 }
 
 func QuickFind(mode int) *Room {
+	// 找到第一个还有空位的房间
 	for _, r := range Rooms {
-		// 找到第一个还有空位的房间
 		if r.inGame || r.Mode != mode {
 			continue
 		}
-		// c := 0
+
 		for _, p := range r.Players {
 			if p == nil {
-				// c++
 				return r
 			}
 		}
-		// if !r.InGame && c < r.PlayerNumber {
-		// 	return r
-		// }
 	}
 	return nil
 }

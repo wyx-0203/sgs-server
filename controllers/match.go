@@ -64,9 +64,6 @@ func JoinRoom(c *gin.Context) {
 	// 进入房间
 	r.AddPlayer(p)
 
-	fmt.Printf("join room room_id:%d user_id:%d\n", r.ID, p.UserID)
-	fmt.Printf("\n")
-
 	// 返回房间信息
 	getRoomInfo(c, r)
 }
@@ -153,3 +150,17 @@ func StartGame(c *gin.Context) {
 		"message": "success",
 	})
 }
+
+// func GameOver(c *gin.Context) {
+// 	p, ok := getPlayer(c)
+// 	if !ok {
+// 		return
+// 	}
+
+// 	p.Room.GameOver()
+
+// 	c.JSON(http.StatusOK, gin.H{
+// 		"code":    0,
+// 		"message": "success",
+// 	})
+// }

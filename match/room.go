@@ -79,12 +79,13 @@ func (r *Room) AddPlayer(p *Player) {
 		r.Owner = p
 	}
 
-	fmt.Printf("room %d: ", r.ID)
+	fmt.Printf("room %d add player: ", r.ID)
 	for _, i := range r.Players {
 		if i != nil {
-			fmt.Printf("%d", i.UserID)
+			fmt.Printf(i.Name + " ")
 		}
 	}
+	fmt.Printf("\n")
 	r.mutex.Unlock()
 
 	// 发送消息
@@ -114,12 +115,6 @@ func (r *Room) RemovePlayer(p *Player) {
 		return
 	}
 
-	// if len(r.Players) == 0 {
-	// 	// 移除房间
-	// 	RemoveRoom <- r
-	// 	r.mutex.Unlock()
-	// 	return
-	// } else
 	if r.Owner == p {
 		// 转让房主
 		for _, _p := range r.Players {
@@ -129,6 +124,15 @@ func (r *Room) RemovePlayer(p *Player) {
 			}
 		}
 	}
+
+	fmt.Printf("room %d remove player: ", r.ID)
+	for _, i := range r.Players {
+		if i != nil {
+			fmt.Printf(i.Name + " ")
+		}
+	}
+	fmt.Printf("\n")
+
 	r.mutex.Unlock()
 
 	// 发送消息
@@ -175,3 +179,13 @@ func (r *Room) StartGame() {
 		r.SetAlready(i)
 	}
 }
+
+// func (r *Room)GameOver() {
+// 	if !r.inGame {
+// 		return
+// 	}
+// 	r.inGame=false
+// 	for _,p:=range r.Players{
+// 		if p!=nu
+// 	}
+// }
