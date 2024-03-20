@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+option csharp_namespace = "GrpcRoomServer";
+option go_package = "./room";
+
+package room;
+
+service RoomService {
+    rpc CreateRoom(CreateRoomRequest) returns (Room);
+    rpc JoinRoom(JoinRoomRequest) returns (Room);
+}
+
+message CreateRoomRequest { int32 userId = 1; }
+
+message JoinRoomRequest { int32 userId = 1; }
+
+message Room {
+    int32 id = 1;
+    string url = 2;
+}

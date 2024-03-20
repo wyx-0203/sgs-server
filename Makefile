@@ -4,8 +4,8 @@ up:
 down:
 	docker-compose down
 
-build:
-	env GOOS=linux CGO_ENABLED=0 go build -o bin/sgs-server
+api_:
+	env GOOS=linux CGO_ENABLED=0 go build -o api/bin/sgs-server api/main.go
 
 webgl:
 	echo y | rm -r nginx/webgl/*
