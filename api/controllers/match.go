@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"google.golang.org/grpc"
@@ -24,9 +25,10 @@ import (
 
 var roomService room.RoomServiceClient
 
-func InitGrpc(room_service_url string) {
-
-	conn, err := grpc.Dial(room_service_url, grpc.WithTransportCredentials(insecure.NewCredentials()))
+func InitGrpc() {
+	domain := os.Getenv("ROOM_GRPC_SERVICE")
+	port := os.Getenv("ROOM_GRPC_PORT")
+	conn, err := grpc.Dial(fmt.Sprintf("%s:%s", domain, port), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
@@ -83,9 +85,10 @@ func JoinRoom(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"code":     0,
-		"message":  "success",
-		"room_id":  r.Id,
+		"code":    0,
+		"message": "success",
+		"room_id": r.Id,
+		// "room_url": r.Url,
 		"room_url": r.Url,
 		// "players":   players,
 		// "owner_pos": r.Owner.Position,

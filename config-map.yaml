@@ -12,7 +12,9 @@ data:
   MYSQL_RANDOM_ROOT_PASSWORD: "yes"
   MYSQL_URL: "mysql-service"
   JWT_SECRET: "sgssgs"
-  ROOM_SERVICE: "room-service"
+  ROOM_GRPC_SERVICE: "room-grpc-service"
+  ROOM_SINALR_SERVICE: "room-signalr-service"
+  ROOM_GRPC_PORT: "5002"
 
   # # 类文件键
   # game.properties: |

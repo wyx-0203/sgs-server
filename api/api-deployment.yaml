@@ -3,6 +3,7 @@ kind: Service
 metadata:
   name: api-service
 spec:
+  # type: NodePort
   selector:
     app: api
   ports:
@@ -14,7 +15,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata: 
-  name: api-deployment
+  name: api
 spec: 
   selector: 
     matchLabels: 
@@ -27,7 +28,8 @@ spec:
     spec: 
       containers:
       - name: api
-        image: 127.0.0.1:5009/api
+        image: api
+        imagePullPolicy: Never
         ports:
         - containerPort: 8080
         envFrom:

@@ -1,8 +1,6 @@
 package main
 
 import (
-	"os"
-
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -43,7 +41,7 @@ func main() {
 	// 处理获取到的 ConfigMap 数据
 
 	models.InitDB()
-	controllers.InitGrpc(os.Getenv("ROOM_SERVICE"))
+	controllers.InitGrpc()
 	// match.Init()
 
 	// Set up a connection to the server.

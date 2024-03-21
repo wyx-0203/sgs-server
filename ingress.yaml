@@ -3,18 +3,27 @@ kind: Ingress
 metadata:
   name: minimal-ingress
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.org/websocket-services: room-signalr-service
+  #   nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
-  ingressClassName: nginx-example
+  # ingressClassName: nginx-example
   rules:
-  # - host: 
+  # - host: "127.0.0.1"
   - http:
       paths:
-      - path: /mysql
+      - path: /
         # Exact: 完全匹配。Prefix: 前缀匹配。ImplementationSpecific: 由控制器决定(默认)。
         pathType: Prefix
         backend:
           service:
-            name: mysql-service
+            name: api-service
             port:
-              number: 3306
+              number: 80
+      - path: /hub
+        # Exact: 完全匹配。Prefix: 前缀匹配。ImplementationSpecific: 由控制器决定(默认)。
+        pathType: Prefix
+        backend:
+          service:
+            name: room-signalr-service
+            port:
+              number: 5001
